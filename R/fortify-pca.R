@@ -223,12 +223,16 @@ fortify.PCA <- function(model, data=NULL, type=c("observations", "variables"), P
       .id <- row.names(model[[i]]$coord)
 
       # scores on the PC
-      scores <- as.data.frame(model[[i]]$coord[,PC])
+      if (class(model[[i]]$coord[,PC]) %in% "numeric") {
+        scores <- as.data.frame(t(model[[i]]$coord[,PC]))
+      } else {
+        scores <- as.data.frame(model[[i]]$coord[,PC])
+      }
       names(scores) <- paste(".PC", PC, sep="")
 
       # square cosine : quality of the representation on the current space
       .cos2 <- model[[i]]$cos2[,PC]
-      if (length(PC > 1)) {
+      if (length(PC > 1) & !(class(.cos2) %in% "numeric")) {
         .cos2 <- rowSums(.cos2)
       }
 
